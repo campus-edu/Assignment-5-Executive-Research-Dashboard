@@ -40,6 +40,20 @@ class _Assignment5ViewState extends State<Assignment5View> {
     });
   }
 
+  void _setPersona(String persona) {
+    setState(() {
+      _selectedPersona = persona;
+      // Auto-filter or refocus panels based on persona
+      if (persona == 'ceo') {
+        _selectedPanelFilter = 0; // Show high-level summary & all panels
+      } else if (persona == 'cfo') {
+        _selectedPanelFilter = 2; // Auto-focus on Market Opportunity & Sensitivity
+      } else {
+        _selectedPanelFilter = 0; // CSO shows all strategic panels
+      }
+    });
+  }
+
   void _openUserGuideDialog() {
     showDialog(
       context: context,
@@ -104,7 +118,7 @@ class _Assignment5ViewState extends State<Assignment5View> {
                           ),
                           SizedBox(height: 6),
                           Text(
-                            '1. Executive Persona Switcher: Toggle between CSO Strategic View, CEO 10-Second Scannable View, and CFO Unit Economics View.\n\n'
+                            '1. Executive Persona Switcher: Toggle between CSO Strategic View, CEO 10-Second Scannable View, and CFO Unit Economics View to instantly reconfigure metrics and decision emphasis.\n\n'
                             '2. Sensitivity Simulator: Adjust AOV, Hourly Throughput, and Commission Take-Rate in Panel 2 to inspect instantaneous changes to Net Contribution, 12-Month ARR, and Cash Runway.\n\n'
                             '3. Triangulation Log & Contradiction Resolution: Solves the Week 9 Contradiction Problem between Assignment 3 market upside and Assignment 4 Texas HB 2127 preemption litigation via mandatory FAA arbitration and modular dispatch architecture.',
                             style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.45),
@@ -136,7 +150,14 @@ class _Assignment5ViewState extends State<Assignment5View> {
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 1140),
-                  child: _buildFilteredPanels(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildPersonaBanner(),
+                      const SizedBox(height: 20),
+                      _buildFilteredPanels(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -193,7 +214,7 @@ class _Assignment5ViewState extends State<Assignment5View> {
                   ],
                 ),
                 Text(
-                  'Executive Research Dashboard • Chief Strategy Officer',
+                  'Executive Research Dashboard • C-Suite Strategy Portal',
                   style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
                 ),
               ],
@@ -201,11 +222,11 @@ class _Assignment5ViewState extends State<Assignment5View> {
           ),
           Row(
             children: [
-              _buildPersonaButton('cso', 'CSO View'),
+              _buildPersonaButton('cso', 'CSO View', Icons.insights),
               const SizedBox(width: 6),
-              _buildPersonaButton('ceo', 'CEO View'),
+              _buildPersonaButton('ceo', 'CEO 10-Sec', Icons.speed),
               const SizedBox(width: 6),
-              _buildPersonaButton('cfo', 'CFO View'),
+              _buildPersonaButton('cfo', 'CFO Capital', Icons.attach_money),
               const SizedBox(width: 12),
               ElevatedButton.icon(
                 onPressed: _openUserGuideDialog,
@@ -231,25 +252,249 @@ class _Assignment5ViewState extends State<Assignment5View> {
     );
   }
 
-  Widget _buildPersonaButton(String id, String label) {
+  Widget _buildPersonaButton(String id, String label, IconData icon) {
     final isSelected = _selectedPersona == id;
-    return OutlinedButton(
-      onPressed: () => setState(() => _selectedPersona = id),
+    return OutlinedButton.icon(
+      onPressed: () => _setPersona(id),
+      icon: Icon(icon, size: 14, color: isSelected ? Colors.white : AppTheme.textSecondary),
+      label: Text(label),
       style: OutlinedButton.styleFrom(
-        backgroundColor: isSelected ? AppTheme.primary.withOpacity(0.2) : Colors.transparent,
+        backgroundColor: isSelected ? AppTheme.primary : AppTheme.bgElevated.withOpacity(0.5),
+        foregroundColor: isSelected ? Colors.white : AppTheme.textSecondary,
         side: BorderSide(
           color: isSelected ? AppTheme.primary : AppTheme.border,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-          color: isSelected ? AppTheme.primaryLight : AppTheme.textSecondary,
+    );
+  }
+
+  Widget _buildPersonaBanner() {
+    if (_selectedPersona == 'ceo') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.primary.withOpacity(0.2),
+              AppTheme.bgCard,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppTheme.primary.withOpacity(0.4)),
         ),
-      ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.speed, color: AppTheme.primaryLight, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'CEO 10-SECOND SCANNABLE VIEW // BOARDROOM BOTTOM LINE',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.primaryLight,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.success.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Text(
+                    'BOARD VERDICT: GO',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      color: AppTheme.successLight,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            const Row(
+              children: [
+                Expanded(
+                  child: _CeoQuickTile(
+                    label: 'PRIMARY TARGET',
+                    val: 'Dallas-Fort Worth',
+                    sub: '45-Day Launch Horizon',
+                    color: AppTheme.success,
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: _CeoQuickTile(
+                    label: 'CAPITAL ALLOCATION',
+                    val: '\$800,000',
+                    sub: 'Series A Initial Beachhead',
+                    color: AppTheme.primaryLight,
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: _CeoQuickTile(
+                    label: 'RUN-RATE ARR',
+                    val: '\$6.8M',
+                    sub: '+112% ARR Inflection (Base)',
+                    color: AppTheme.accentPurple,
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: _CeoQuickTile(
+                    label: 'CALIFORNIA STATUS',
+                    val: 'EMBARGO',
+                    sub: 'Zero Capital Authorized',
+                    color: AppTheme.danger,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else if (_selectedPersona == 'cfo') {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.success.withOpacity(0.15),
+              AppTheme.bgCard,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppTheme.success.withOpacity(0.4)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.account_balance, color: AppTheme.successLight, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'CFO CAPITAL ALLOCATION & UNIT ECONOMICS VIEW // GAAP P&L AUDIT',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.successLight,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Itemized per-order margin deconstruction across regulatory environments. Texas statutory sanctuary generates +\$4.05 net margin per drop, while California wage mandates flip unit margins to a negative -\$1.85 loss per delivery.',
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+            ),
+            const SizedBox(height: 16),
+            _buildCfoPlTable(),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.bgSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.border),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.insights, color: AppTheme.primaryLight, size: 18),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'CSO STRATEGIC VIEW: Unified 4-Panel Research Synthesis across AI Governance, Unit Economics, Regulatory Preemption, and Series A Roadmap.',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buildCfoPlTable() {
+    return Table(
+      border: TableBorder.all(color: AppTheme.border, width: 1),
+      children: const [
+        TableRow(
+          decoration: BoxDecoration(color: AppTheme.bgSurface),
+          children: [
+            Padding(padding: EdgeInsets.all(8), child: Text('P&L Line Item', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11))),
+            Padding(padding: EdgeInsets.all(8), child: Text('Texas (Sanctuary)', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.successLight))),
+            Padding(padding: EdgeInsets.all(8), child: Text('Colorado (Moderate)', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.warning))),
+            Padding(padding: EdgeInsets.all(8), child: Text('California (Embargo)', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, color: AppTheme.danger))),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(padding: EdgeInsets.all(8), child: Text('Average Order Value (AOV)', style: TextStyle(fontSize: 11))),
+            Padding(padding: EdgeInsets.all(8), child: Text('\$38.50', style: TextStyle(fontSize: 11, color: AppTheme.textPrimary))),
+            Padding(padding: EdgeInsets.all(8), child: Text('\$38.50', style: TextStyle(fontSize: 11, color: AppTheme.textPrimary))),
+            Padding(padding: EdgeInsets.all(8), child: Text('\$38.50', style: TextStyle(fontSize: 11, color: AppTheme.textPrimary))),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(padding: EdgeInsets.all(8), child: Text('Gross Platform Take (22% + \$3.99)', style: TextStyle(fontSize: 11))),
+            Padding(padding: EdgeInsets.all(8), child: Text('\$12.46', style: TextStyle(fontSize: 11, color: AppTheme.textPrimary))),
+            Padding(padding: EdgeInsets.all(8), child: Text('\$12.46', style: TextStyle(fontSize: 11, color: AppTheme.textPrimary))),
+            Padding(padding: EdgeInsets.all(8), child: Text('\$9.76 (15% Cap)', style: TextStyle(fontSize: 11, color: AppTheme.danger))),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(padding: EdgeInsets.all(8), child: Text('Courier Fulfillment Payout', style: TextStyle(fontSize: 11))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$4.85 (1099 Standard)', style: TextStyle(fontSize: 11, color: AppTheme.successLight))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$6.20 (HFWA Leave)', style: TextStyle(fontSize: 11, color: AppTheme.warning))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$7.95 (Prop 22 Guarantees)', style: TextStyle(fontSize: 11, color: AppTheme.danger))),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(padding: EdgeInsets.all(8), child: Text('Gateway & Processing (2.9% + \$0.30)', style: TextStyle(fontSize: 11))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$1.53', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$1.53', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$1.53', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary))),
+          ],
+        ),
+        TableRow(
+          decoration: BoxDecoration(color: AppTheme.bgSurface),
+          children: [
+            Padding(padding: EdgeInsets.all(8), child: Text('Net Contribution / Drop', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11))),
+            Padding(padding: EdgeInsets.all(8), child: Text('+\$4.05 (Net Margin)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppTheme.successLight))),
+            Padding(padding: EdgeInsets.all(8), child: Text('+\$1.60 (Compressed)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppTheme.warning))),
+            Padding(padding: EdgeInsets.all(8), child: Text('-\$1.85 (NET LOSS)', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: AppTheme.danger))),
+          ],
+        ),
+      ],
     );
   }
 
@@ -810,6 +1055,42 @@ class _Assignment5ViewState extends State<Assignment5View> {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CeoQuickTile extends StatelessWidget {
+  final String label;
+  final String val;
+  final String sub;
+  final Color color;
+
+  const _CeoQuickTile({
+    required this.label,
+    required this.val,
+    required this.sub,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTheme.bgCard,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: color)),
+          const SizedBox(height: 4),
+          Text(val, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: color)),
+          const SizedBox(height: 2),
+          Text(sub, style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
         ],
       ),
     );
