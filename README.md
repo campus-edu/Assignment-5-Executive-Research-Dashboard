@@ -1,51 +1,61 @@
-# QuickBite Technologies // Master Executive Portals
+# QuickBite Technologies // C-Suite Strategy & Regulatory Portals
 
-> **AI.135 Applied AI for Document & Linguistic Analysis**  
-> *Author*: Jason Orozco Zarco (Head of Legal & Compliance / Chief Strategy Officer)  
-> *Ready for GitHub Pages Deployment*  
+> **Course:** AI.135 Applied AI for Document & Linguistic Analysis  
+> **Author:** Jason Orozco Zarco (Head of Legal & Compliance / Chief Strategy Officer)  
+> **Framework:** Flutter 3.24 (Web Assembly / CanvasKit) + GitHub Pages Automated Actions  
 
 ---
 
-## Directory Structure
+## Executive System Architecture
 
-This repository contains two distinct, specialized executive dashboards:
+This repository contains the interactive Flutter Web executive strategy portal for QuickBite Technologies, resolving the multi-jurisdictional compliance mandates and unit economic sensitivities across Course Assignments 1 through 5.
 
 ```
 ready_to_upload_github_pages/
-├── index.html                                 # Master Portal Hub (Links to both dashboards)
-├── .nojekyll                                  # Bypasses Jekyll on GitHub Pages
-├── .github/workflows/deploy.yml               # GitHub Actions automatic deployment
-├── assignment4/                               # DISTINCT DASHBOARD 1 (Assignment 4)
-│   ├── index.html                             # C-Suite Presentation Deck (Slides 1–4) & Matrix
-│   ├── styles.css                             # Dedicated Assignment 4 Styles
-│   ├── app.js                                 # Presentation Controls, Weights & Keyboard Arrows
-│   ├── Complete_Assignment_4_Regulatory_Impact_Analysis.pdf
-│   ├── AI.135_Assignment4_Jason_Orozco_Zarco.pptx
-│   └── README.md
-└── assignment5/                               # DISTINCT DASHBOARD 2 (Assignment 5)
-    ├── index.html                             # 4-Panel Executive Research Dashboard & Simulator
-    ├── styles.css                             # Dedicated Assignment 5 Styles
-    ├── app.js                                 # Sensitivity Engine & SEC 10-K Visualizations
-    ├── Complete_Assignment_5_Executive_Dashboard_User_Guide.pdf
-    ├── Complete_Assignment_5_Executive_Dashboard_User_Guide.docx
-    └── README.md
+├── lib/
+│   ├── main.dart                          # Root routing controller & theme definition
+│   ├── theme/app_theme.dart               # C-Suite Material 3 dark slate palette
+│   ├── models/
+│   │   ├── regulatory_model.dart          # 5-Pillar dynamic statutory weighting model
+│   │   └── sensitivity_model.dart         # Unit economics & GAAP revenue engine
+│   ├── widgets/
+│   │   ├── orientation_bar.dart           # Three Questions Test orientation bar
+│   │   └── doc_download_button.dart       # Deliverable file triggers
+│   └── views/
+│       ├── hub_view.dart                  # Master Executive Strategy Hub
+│       ├── assignment4_view.dart          # Assignment 4: 16:9 Presentation & Matrix
+│       └── assignment5_view.dart          # Assignment 5: 4 Strategic Panels & Simulator
+├── web/                                   # Flutter web packaging & manifest
+├── assets/documents/                      # Preserved PDF, PPTX, and DOCX deliverables
+├── .github/workflows/deploy.yml           # CI/CD Flutter Web builder & Pages deployer
+├── connect_github.sh                      # Automated GitHub remote & upload script
+└── pubspec.yaml                           # Flutter dependencies & asset registration
 ```
 
 ---
 
-## How to Deploy to GitHub Pages
+## Resolving the Assignment 5 Isolation Bug
 
-1. Push this folder to your GitHub repository:
+In earlier vanilla HTML prototypes, the presentation deck markup from Assignment 4 was duplicated directly above the Assignment 5 panels, and JavaScript forced an initial `deck` viewport state. This Flutter Web implementation isolates both deliverables into discrete declarative views (`Assignment4View` and `Assignment5View`), completely eliminating viewport bleeding and cross-panel state contamination.
+
+---
+
+## Connecting to GitHub & Deploying to GitHub Pages
+
+### Option 1: Automated Script
+Run the included connector script:
+```bash
+./connect_github.sh <YOUR_REPOSITORY_NAME>
+```
+
+### Option 2: Manual Push
+1. Authenticate with GitHub CLI:
    ```bash
-   cd ready_to_upload_github_pages
-   git add .
-   git commit -m "Deploy dual distinct dashboards for Assignment 4 and 5"
+   gh auth login
+   ```
+2. Create or link the remote repository:
+   ```bash
    git remote add origin https://github.com/<USERNAME>/<REPO_NAME>.git
    git push -u origin main
    ```
-2. In GitHub, go to **Settings** > **Pages**.
-3. Under **Source**, choose **Deploy from a branch** > `main` > `/ (root)`.
-4. Your live site will deploy at:
-   * **Master Portal**: `https://<USERNAME>.github.io/<REPO_NAME>/`
-   * **Assignment 4 Dashboard**: `https://<USERNAME>.github.io/<REPO_NAME>/assignment4/`
-   * **Assignment 5 Dashboard**: `https://<USERNAME>.github.io/<REPO_NAME>/assignment5/`
+3. In GitHub, go to **Settings > Pages** and ensure **Source** is set to **GitHub Actions**. The automated workflow in `.github/workflows/deploy.yml` will compile Flutter Web and publish the application immediately.

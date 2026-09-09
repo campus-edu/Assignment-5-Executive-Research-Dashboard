@@ -1,0 +1,26 @@
+name: quickbite_executive_portal
+description: "QuickBite Technologies C-Suite Strategy & Regulatory Portals (AI135)"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  url_launcher: ^6.3.1
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/documents/Complete_Assignment_4_Regulatory_Impact_Analysis.pdf
+    - assets/documents/AI.135_Assignment4_Jason_Orozco_Zarco.pptx
+    - assets/documents/Complete_Assignment_5_Executive_Dashboard_User_Guide.pdf
+    - assets/documents/Complete_Assignment_5_Executive_Dashboard_User_Guide.docx
